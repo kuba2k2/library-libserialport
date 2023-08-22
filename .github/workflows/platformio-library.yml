@@ -1,0 +1,96 @@
+name: Deploy PlatformIO library
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Upstream ref
+        required: false
+        default: ''
+      version:
+        description: Package version
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    name: Deploy PlatformIO library
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout upstream
+        uses: actions/checkout@v3
+        with:
+          repository: sigrokproject/libserialport
+          ref: ${{ inputs.ref }}
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          path: actions
+
+      - name: Cache pip
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+      - name: Cache PlatformIO
+        uses: actions/cache@v2
+        with:
+          path: ~/.platformio
+          key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
+      - name: Set up Python
+        uses: actions/setup-python@v2
+      - name: Install PlatformIO
+        run: |
+          python -m pip install --upgrade pip
+          pip install --upgrade platformio
+
+      - name: Generate version number
+        id: version
+        run: |
+          echo version=$(date -d $(git log -1 --format=%cs) +%Y.%-m.%-d) >> $GITHUB_OUTPUT
+
+      - name: Write package/library data
+        run: |
+          cp actions/package.json .
+          cp actions/library.json .
+          cp actions/extra_script.py .
+          sed -i s/VERSION/${{ inputs.version || steps.version.outputs.version }}/g package.json library.json
+          rm -rf actions/
+
+      - name: Cleanup repository
+        run: |
+          git checkout -B platformio
+          rm -rf examples/
+          mkdir src/
+          mv *.c src/
+          mv *.h src/
+          rm -f src/test_*.c
+          rm -f *.*
+          rm -f config-*
+          rm -f Doxyfile
+
+      - name: Commit and push changes
+        env:
+          version: ${{ inputs.version || steps.version.outputs.version }}
+        run: |
+          git config --global user.email "gh-actions@example.com"
+          git config --global user.name "GitHub Actions"
+          git add .
+          git commit -m "[${{ env.version }}] Prepare PlatformIO package"
+          git tag ${{ env.version }}
+          git remote set-url origin https://github.com/${{ github.repository }}
+          git push --force origin platformio
+          git push --force origin ${{ env.version }}
+
+      - name: Publish PlatformIO library
+        env:
+          CI: true
+          PLATFORMIO_AUTH_TOKEN: ${{ secrets.PLATFORMIO_AUTH_TOKEN }}
+        run: |
+          rm package.json
+          platformio pkg publish --non-interactive --type library

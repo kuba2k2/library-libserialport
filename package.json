@@ -1,0 +1,5 @@
+{
+	"name": "library-libserialport",
+	"version": "VERSION",
+	"description": "Cross-platform library for accessing serial ports"
+}
