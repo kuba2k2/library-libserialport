@@ -92,5 +92,5 @@ jobs:
           CI: true
           PLATFORMIO_AUTH_TOKEN: ${{ secrets.PLATFORMIO_AUTH_TOKEN }}
         run: |
-          rm package.json
+          rm -f package.json
           platformio pkg publish --non-interactive --type library
