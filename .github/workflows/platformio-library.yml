@@ -54,14 +54,6 @@ jobs:
         run: |
           echo version=$(date -d $(git log -1 --format=%cs) +%Y.%-m.%-d) >> $GITHUB_OUTPUT
 
-      - name: Write package/library data
-        run: |
-          cp actions/package.json .
-          cp actions/library.json .
-          cp actions/extra_script.py .
-          sed -i s/VERSION/${{ inputs.version || steps.version.outputs.version }}/g package.json library.json
-          rm -rf actions/
-
       - name: Cleanup repository
         run: |
           git checkout -B platformio
@@ -73,6 +65,14 @@ jobs:
           rm -f *.*
           rm -f config-*
           rm -f Doxyfile
+
+      - name: Write package/library data
+        run: |
+          cp actions/package.json .
+          cp actions/library.json .
+          cp actions/extra_script.py .
+          sed -i s/VERSION/${{ inputs.version || steps.version.outputs.version }}/g package.json library.json
+          rm -rf actions/
 
       - name: Commit and push changes
         env:
@@ -92,5 +92,5 @@ jobs:
           CI: true
           PLATFORMIO_AUTH_TOKEN: ${{ secrets.PLATFORMIO_AUTH_TOKEN }}
         run: |
-          rm -f package.json
+          rm package.json
           platformio pkg publish --non-interactive --type library

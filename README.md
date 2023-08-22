@@ -9,7 +9,7 @@ Cross-platform library for accessing serial ports
 - [Upstream repository](https://github.com/sigrokproject/libserialport)
 - [See all tags](https://github.com/kuba2k2/library-libserialport/tags)
 - [See all files](https://github.com/kuba2k2/library-libserialport/tree/platformio)
-- [Cleaned up files](https://github.com/kuba2k2/library-libserialport/blob/actions/.github/workflows/platformio-library.yml#L68-75)
+- [Cleaned up files](https://github.com/kuba2k2/library-libserialport/blob/actions/.github/workflows/platformio-library.yml#L59-67)
 
 ## Where is the code?
 
