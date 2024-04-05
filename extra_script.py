@@ -40,6 +40,10 @@ elif platform.startswith("linux_"):
             "+<src/linux.c>",
             "+<src/linux_termios.c>",
         ],
+        # https://github.com/sigrokproject/libserialport/blob/master/Makefile.am#L29
+        CPPDEFINES=[
+            "LIBSERIALPORT_ATBUILD",
+        ],
     )
 else:
     raise ValueError(f"Incompatible platform '{platform}'")

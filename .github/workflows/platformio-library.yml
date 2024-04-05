@@ -71,6 +71,7 @@ jobs:
           cp actions/package.json .
           cp actions/library.json .
           cp actions/extra_script.py .
+          cp actions/config.h src/
           sed -i s/VERSION/${{ inputs.version || steps.version.outputs.version }}/g package.json library.json
           rm -rf actions/
 
