@@ -1,5 +1,6 @@
 #  Copyright (c) Kuba Szczodrzyński 2023-8-22.
 
+import sys
 from os.path import realpath
 
 Import("env")
@@ -45,8 +46,8 @@ elif platform.startswith("linux_"):
             "LIBSERIALPORT_ATBUILD",
         ],
     )
-elif platform == "native":
-    # macOS uses the native platform in PlatformIO
+elif sys.platform == "darwin":
+    # macOS native build
     env.Append(
         SRC_FILTER=[
             "+<src/macosx.c>",
