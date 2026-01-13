@@ -45,5 +45,15 @@ elif platform.startswith("linux_"):
             "LIBSERIALPORT_ATBUILD",
         ],
     )
+elif platform == "native":
+    # macOS uses the native platform in PlatformIO
+    env.Append(
+        SRC_FILTER=[
+            "+<src/macosx.c>",
+        ],
+        CPPDEFINES=[
+            "LIBSERIALPORT_ATBUILD",
+        ],
+    )
 else:
     raise ValueError(f"Incompatible platform '{platform}'")

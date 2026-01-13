@@ -4,7 +4,7 @@
 	"description": "Cross-platform library for accessing serial ports",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/kuba2k2/library-libserialport"
+		"url": "https://github.com/l1n/library-libserialport"
 	},
 	"build": {
 		"srcDir": ".",
