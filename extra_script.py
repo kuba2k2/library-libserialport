@@ -1,5 +1,6 @@
 #  Copyright (c) Kuba Szczodrzyński 2023-8-22.
 
+import sys
 from os.path import realpath
 
 Import("env")
@@ -41,6 +42,16 @@ elif platform.startswith("linux_"):
             "+<src/linux_termios.c>",
         ],
         # https://github.com/sigrokproject/libserialport/blob/master/Makefile.am#L29
+        CPPDEFINES=[
+            "LIBSERIALPORT_ATBUILD",
+        ],
+    )
+elif sys.platform == "darwin":
+    # macOS native build
+    env.Append(
+        SRC_FILTER=[
+            "+<src/macosx.c>",
+        ],
         CPPDEFINES=[
             "LIBSERIALPORT_ATBUILD",
         ],
